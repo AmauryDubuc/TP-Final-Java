@@ -1,3 +1,7 @@
+package server;
+
+import java.io.IOException;
+
 import javafx.application.Application;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -107,10 +111,17 @@ public class ServerUI extends Application implements EventHandler {
 
         // Changement de l etat du server
         running = true;
-		
-		// TODO
-		// TODO
-		// TODO
+
+        String serverIP = ip.getText(); //recupere le text dans le champs ip
+        int serverPort = Integer.parseInt(port.getText()); //recupere le text dans le champs port
+
+        try {
+            Server server = new Server(serverIP, serverPort);
+            server.run();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

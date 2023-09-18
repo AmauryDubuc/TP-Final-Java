@@ -3,6 +3,9 @@
  *
  * @author mathieu.fabre
  */
+
+package ITchat;
+
 public interface ITchat {
 
     // Taille du buffer pour les echanges de message
