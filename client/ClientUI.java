@@ -111,6 +111,7 @@ public class ClientUI extends Application implements EventHandler {
      * @param message
      */
     public void appendMessage(String message) {
+        message = message + "\n";
         textArea.appendText(message);
     }
 
@@ -168,7 +169,10 @@ public class ClientUI extends Application implements EventHandler {
      * que le thread se deconnecte
      */
     public void disconnectFromServer() {
+
         this.running = false;
+        setDisconnectedState();
+
     }
 
     /**
@@ -199,7 +203,8 @@ public class ClientUI extends Application implements EventHandler {
         // Envoi du texte si on appui sur entree et que le contenu n'est pas vide
         if (event.getCode() == KeyCode.ENTER && input.getText().trim().length() > 0) {
 
-            String message = input.getText().trim();
+            String message = nickname.getCharacters() + ": " + input.getText().trim();
+            System.out.println(nickname.getCharacters());
             if (!message.isEmpty()) {
                 client.envoie_message(message);
                 input.clear(); // on vide pour le prochain message
