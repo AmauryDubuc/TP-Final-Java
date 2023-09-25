@@ -85,7 +85,6 @@ public class Client extends Thread implements ITchat {
 							running = false;
 
 						}
-						System.out.println("alooo");
 					} else if (cle.isReadable()) {
 
 						SocketChannel connexion_server = (SocketChannel) cle.channel();
@@ -102,7 +101,6 @@ public class Client extends Thread implements ITchat {
 
 							buffer.flip();
 							String receivedMessage = StandardCharsets.UTF_8.decode(buffer).toString();
-							System.out.println(receivedMessage);
 							clientUI.appendMessage(receivedMessage);
 
 						}

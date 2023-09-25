@@ -61,15 +61,18 @@ public class Server extends Thread implements ITchat {
 
                     } else if (cle.isReadable()) {
 
-                        SocketChannel client = (SocketChannel) cle.channel();// retourne un socket channel
+                        SocketChannel client = (SocketChannel) cle.channel(); // retourne un socket channel
                         ByteBuffer buffer = ByteBuffer.allocate(1024);
                         int bytesRead = client.read(buffer);
 
                         if (bytesRead == -1) {
+
                             // Le client a fermé la connexion
                             cle.cancel();
                             client.close();
+
                         } else {
+
                             // Décoder les données en texte
                             buffer.flip();
                             Charset charset = StandardCharsets.UTF_8;
