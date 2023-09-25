@@ -1,5 +1,3 @@
-package client;
-
 import javafx.application.Application;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -10,6 +8,8 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+
+import java.io.IOException;
 import java.util.Random;
 
 /**
@@ -61,7 +61,7 @@ public class ClientUI extends Application implements EventHandler {
         textArea = new TextArea();
         borderPane.setCenter(textArea);
 
-        // ZOne basse pour la xone de texte et le statut
+        // ZOne basse pour la zone de texte et le statut
         VBox bottomBox = new VBox();
         status = new Label("Pret");
         input = new TextField();
@@ -74,6 +74,7 @@ public class ClientUI extends Application implements EventHandler {
 
         stage.setTitle("Client de tchat");
         stage.show();
+
     }
 
     /**
@@ -114,7 +115,7 @@ public class ClientUI extends Application implements EventHandler {
     }
 
     /**
-     * Change le ;essage de statut
+     * Change le message de statut
      *
      * @param message
      */
@@ -142,14 +143,22 @@ public class ClientUI extends Application implements EventHandler {
             return;
         }
 
-        // TODO
-		// TODO
-		// TODO
+        try {
 
-        // Changement de l etat du client
+            client = new Client(ip.getText().trim(), Integer.parseInt(port.getText().trim()), this);
+            client.start();
+            setStatus("Connecté au serveur.");
+
+        } catch (IOException e) {
+
+            setStatus("Erreur de connexion au serveur.");
+
+        }
+
+        // Changement de l'etat du client
         running = true;
 
-        // Changement d etat de l'IHM
+        // // Changement d etat de l'IHM
         setConnectedState();
     }
 
@@ -174,7 +183,7 @@ public class ClientUI extends Application implements EventHandler {
         } else if (event.getSource() == disconnect) {
             disconnectFromServer();
         } else if (event.getSource() == input) {
-            processEnter((KeyEvent)event);
+            processEnter((KeyEvent) event);
         }
 
     }
@@ -187,12 +196,14 @@ public class ClientUI extends Application implements EventHandler {
      */
     public void processEnter(KeyEvent event) {
 
-        // Envoi du texte si on appui sur entree et que le contenu n est pas vide
+        // Envoi du texte si on appui sur entree et que le contenu n'est pas vide
         if (event.getCode() == KeyCode.ENTER && input.getText().trim().length() > 0) {
-            // TODO
-			// TODO
-			// TODO
-            input.setText("");
+
+            String message = input.getText().trim();
+            if (!message.isEmpty()) {
+                client.envoie_message(message);
+                input.clear(); // on vide pour le prochain message
+            }
         }
     }
 
@@ -201,7 +212,7 @@ public class ClientUI extends Application implements EventHandler {
      *
      * @param args
      */
-    public static void main(String [] args) {
+    public static void main(String[] args) {
         launch(args);
     }
 }

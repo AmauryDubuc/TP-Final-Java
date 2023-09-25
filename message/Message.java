@@ -4,9 +4,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Message {
-    private String type;   //mot clef pour representer le type  connexion envoyer deco etc
-    private String content;  // le contenu du message
-    private String sender;   // str qui represente l'auteur
+    private String type; // mot clef pour representer le type connexion envoyer deco etc
+    private String content; // le contenu du message
+    private String sender; // str qui represente l'auteur
 
     public Message(String type, String content, String sender) {
         this.type = type;
@@ -59,7 +59,7 @@ public class Message {
     public static Message fromJson(JsonObject jsonObject) {
         String contenu = jsonObject.getString("contenu");
         String expéditeur = jsonObject.getString("expediteur");
-        
+
         return new Message(contenu, expéditeur);
     }
 }
