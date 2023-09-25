@@ -1,5 +1,3 @@
-package server;
-
 import java.io.IOException;
 
 import javafx.application.Application;
@@ -51,6 +49,7 @@ public class ServerUI extends Application implements EventHandler {
 
     /**
      * Ajoute un log dans la fenetre de log
+     * 
      * @param message
      */
     public void log(String message) {
@@ -112,12 +111,12 @@ public class ServerUI extends Application implements EventHandler {
         // Changement de l etat du server
         running = true;
 
-        String serverIP = ip.getText(); //recupere le text dans le champs ip
-        int serverPort = Integer.parseInt(port.getText()); //recupere le text dans le champs port
+        String serverIP = ip.getText(); // recupere le text dans le champs ip
+        int serverPort = Integer.parseInt(port.getText()); // recupere le text dans le champs port
 
         try {
             Server server = new Server(serverIP, serverPort);
-            server.run();
+            server.start();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -162,7 +161,7 @@ public class ServerUI extends Application implements EventHandler {
      *
      * @param args
      */
-    public static void main(String [] args) {
+    public static void main(String[] args) {
         launch(args);
     }
 
