@@ -1,5 +1,6 @@
 
 import ITchat.ITchat;
+import javafx.application.Platform;
 import message.Message;
 
 import java.io.IOException;
@@ -54,7 +55,7 @@ public class Client extends Thread implements ITchat {
 		}
 	}
 
-	public void start() {
+	public void run() {
 
 		try {
 
@@ -85,7 +86,7 @@ public class Client extends Thread implements ITchat {
 						}
 
 					} else if (cle.isReadable()) {
-						System.out.println(6);
+
 						SocketChannel connexion_server = (SocketChannel) cle.channel();
 						ByteBuffer buffer = ByteBuffer.allocate(1024);
 						int bytesRead = connexion_server.read(buffer);
@@ -100,6 +101,7 @@ public class Client extends Thread implements ITchat {
 
 							buffer.flip();
 							String receivedMessage = StandardCharsets.UTF_8.decode(buffer).toString();
+							System.out.println(receivedMessage);
 							clientUI.appendMessage(receivedMessage);
 
 						}

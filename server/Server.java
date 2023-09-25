@@ -35,7 +35,7 @@ public class Server extends Thread implements ITchat {
 
     }
 
-    public void start() {
+    public void run() {
         try {
             while (true) {
                 int ready = selector.select(); // retourne les channel qui sont pret pour operation sous forme de int
@@ -43,7 +43,6 @@ public class Server extends Thread implements ITchat {
                 if (ready == 0) {
                     continue;
                 }
-                System.out.println(11);
                 Set<SelectionKey> cles = selector.selectedKeys();
                 Iterator<SelectionKey> iterator = cles.iterator();
 
@@ -56,7 +55,6 @@ public class Server extends Thread implements ITchat {
                                                                                       // de socket
                         // gerer connexion entrante
                         SocketChannel clientSocketChannel = serverSocketChannel.accept();
-                        System.out.println("ezzee");
                         clientSocketChannel.configureBlocking(false);
                         clientSocketChannel.register(selector, SelectionKey.OP_READ); // OP_READ pour lire dans le
                                                                                       // channel
@@ -84,7 +82,6 @@ public class Server extends Thread implements ITchat {
                                     if (!clientChannel.equals(serverSocketChannel)) { // On s'assure de ne pas l'envoyer
                                                                                       // au serveur
                                         ByteBuffer messageBuffer = charset.encode(message);
-                                        System.out.println(messageBuffer);
                                         clientChannel.write(messageBuffer);
                                     }
                                 }
