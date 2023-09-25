@@ -75,6 +75,7 @@ public class Client extends Thread implements ITchat {
 						if (socketChannel.finishConnect()) {
 
 							System.out.println("Connexion au server réussi");
+							socketChannel.register(selector, SelectionKey.OP_READ);
 							clientUI.setConnectedState();
 
 						} else {
@@ -84,7 +85,7 @@ public class Client extends Thread implements ITchat {
 							running = false;
 
 						}
-
+						System.out.println("alooo");
 					} else if (cle.isReadable()) {
 
 						SocketChannel connexion_server = (SocketChannel) cle.channel();
