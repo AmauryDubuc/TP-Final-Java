@@ -170,9 +170,13 @@ public class ClientUI extends Application implements EventHandler {
      */
     public void disconnectFromServer() {
 
+        if (client != null) {
+
+            client.close_connexion_server();
+
+        }
         this.running = false;
         setDisconnectedState();
-
     }
 
     /**
@@ -204,7 +208,6 @@ public class ClientUI extends Application implements EventHandler {
         if (event.getCode() == KeyCode.ENTER && input.getText().trim().length() > 0) {
 
             String message = nickname.getCharacters() + ": " + input.getText().trim();
-            System.out.println(nickname.getCharacters());
             if (!message.isEmpty()) {
                 client.envoie_message(message);
                 input.clear(); // on vide pour le prochain message

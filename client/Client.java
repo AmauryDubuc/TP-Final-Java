@@ -1,17 +1,13 @@
 
 import ITchat.ITchat;
-import javafx.application.Platform;
-import message.Message;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
-import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -24,6 +20,13 @@ public class Client extends Thread implements ITchat {
 	private Selector selector;
 	private ClientUI clientUI;
 
+	/**
+	 * Constructeur du Client
+	 *
+	 * @param ip
+	 * @param port
+	 * @param new_clientUI
+	 */
 	public Client(String ip, int port, ClientUI new_clientUI) throws IOException {
 
 		clientUI = new_clientUI;
@@ -35,6 +38,11 @@ public class Client extends Thread implements ITchat {
 																	// entrante
 	}
 
+	/**
+	 * methodes pour envoyer un message au serveur
+	 *
+	 * @param message
+	 */
 	public void envoie_message(String message) {
 		try {
 			if (socketChannel.isConnected()) {
@@ -55,6 +63,30 @@ public class Client extends Thread implements ITchat {
 		}
 	}
 
+	/**
+	 * fermer la connexion au serveur proprement
+	 *
+	 */
+	public void close_connexion_server() {
+
+		try {
+
+			if (socketChannel != null && socketChannel.isOpen()) {
+
+				socketChannel.close();
+
+			}
+		} catch (IOException ioe) {
+
+			ioe.printStackTrace();
+
+		}
+	}
+
+	/**
+	 * Lancer par le ClientUI avce le .start()
+	 *
+	 */
 	public void run() {
 
 		try {
@@ -62,27 +94,30 @@ public class Client extends Thread implements ITchat {
 			boolean running = true;
 
 			while (running) {
-				selector.select();
+
+				int ready = selector.select();
+				if (ready == 0) {
+
+					continue;
+				}
 				Set<SelectionKey> cles = selector.selectedKeys();
 				Iterator<SelectionKey> iterator = cles.iterator();
 
 				while (iterator.hasNext()) {
 
 					SelectionKey cle = iterator.next();
-
-					if (cle.isConnectable()) {
+					if (!cle.isValid()) {
+						cle.cancel();
+						continue;
+					} else if (cle.isConnectable()) {
 
 						if (socketChannel.finishConnect()) {
 
 							System.out.println("Connexion au server réussi");
-							socketChannel.register(selector, SelectionKey.OP_READ);
+							socketChannel.register(selector, SelectionKey.OP_READ); // maintenant que l'on est conncté
+																					// on peut lire les message du
+																					// serveur
 							clientUI.setConnectedState();
-
-						} else {
-
-							System.out.println("Echec de connexion au server");
-							socketChannel.close();
-							running = false;
 
 						}
 					} else if (cle.isReadable()) {
@@ -91,11 +126,10 @@ public class Client extends Thread implements ITchat {
 						ByteBuffer buffer = ByteBuffer.allocate(1024);
 						int bytesRead = connexion_server.read(buffer);
 
-						if (bytesRead == -1) {
+						if (bytesRead == -1) {// Le server a fermé la connexion
 
-							// Le server a fermé la connexion
 							cle.cancel();
-							connexion_server.close();
+							clientUI.disconnectFromServer();
 
 						} else {
 
@@ -110,7 +144,8 @@ public class Client extends Thread implements ITchat {
 			}
 		} catch (IOException ioe) {
 
-			ioe.printStackTrace();
+			System.out.println("Echec de connexion au server");
+			clientUI.disconnectFromServer();
 
 		}
 	}

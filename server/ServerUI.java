@@ -39,6 +39,11 @@ public class ServerUI extends Application implements EventHandler {
     private Label status;
 
     /**
+     * Le thread server
+     */
+    private Server server;
+
+    /**
      * Indique si le serveur tourne
      *
      * @return
@@ -110,12 +115,11 @@ public class ServerUI extends Application implements EventHandler {
 
         // Changement de l etat du server
         running = true;
-
         String serverIP = ip.getText(); // recupere le text dans le champs ip
         int serverPort = Integer.parseInt(port.getText()); // recupere le text dans le champs port
 
         try {
-            Server server = new Server(serverIP, serverPort);
+            server = new Server(serverIP, serverPort, this);
             server.start();
 
         } catch (IOException e) {
@@ -153,7 +157,15 @@ public class ServerUI extends Application implements EventHandler {
     public void stopServer() {
 
         // On marque l'arret et on attends l'arret du server
+        if (server != null) {
+
+            server.stop_server();
+            server = null;
+
+        }
         running = false;
+        setNonRunningState();
+
     }
 
     /**
